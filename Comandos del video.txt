@@ -1,0 +1,37 @@
+docker build -t mediamtx-server .
+
+Construye la imagen del servidor a partir del Dockerfile.
+
+
+docker run --rm -it --network rtsp-net -p 8554:8554 mediamtx-server
+
+Inicia el servidor RTSP escuchando en el puerto 8554.
+
+
+docker build -t ffmpeg-client .
+
+Crea la imagen del cliente FFmpeg para transmisión de video.
+
+
+docker run --rm -it \
+--network rtsp-net \
+-v ~/Escritorio/Trabajotallerderedes:/videos \
+ffmpeg-client \
+-re -stream_loop -1 \
+-i /videos/video.mp4 \
+-c:v libx264 -preset veryfast \
+-c:a aac \
+-f rtsp \
+rtsp://172.17.0.1:8554/mystream
+
+Transmite un video en tiempo real hacia el servidor usando RTSP.
+
+
+docker ps
+
+Muestra los contenedores en ejecución (cliente y servidor activos).
+
+
+tcp.port == 8554 && rtsp
+
+Filtra solo el tráfico RTSP entre cliente y servidor.
